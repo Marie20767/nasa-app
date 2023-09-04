@@ -1,26 +1,26 @@
-const getPlanets = async () => {
+const getPlanetsRequest = async () => {
   // TODO: Once API is ready.
   // Load planets and return as JSON.
-}
+};
 
-const getLaunches = async () => {
+const getLaunchesRequest = async () => {
   // TODO: Once API is ready.
   // Load launches, sort by flight number, and return as JSON.
-}
+};
 
-const submitLaunch = async (launch) => {
+const submitLaunchRequest = async (launch) => {
   // TODO: Once API is ready.
   // Submit given launch data to launch system.
-}
+};
 
-const abortLaunch = async (id) => {
+const abortLaunchRequest = async (id) => {
   // TODO: Once API is ready.
   // Delete launch with given ID.
-}
+};
 
 export {
-  getPlanets,
-  getLaunches,
-  submitLaunch,
-  abortLaunch,
+  getPlanetsRequest,
+  getLaunchesRequest,
+  submitLaunchRequest,
+  abortLaunchRequest,
 };

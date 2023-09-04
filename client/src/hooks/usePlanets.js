@@ -1,12 +1,13 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from 'react';
 
-import { httpGetPlanets } from "./requests";
+import { getPlanetsRequest } from './requests';
 
-function usePlanets() {
+const usePlanets = () => {
   const [planets, savePlanets] = useState([]);
 
   const getPlanets = useCallback(async () => {
-    const fetchedPlanets = await httpGetPlanets();
+    const fetchedPlanets = await getPlanetsRequest();
+
     savePlanets(fetchedPlanets);
   }, []);
 
@@ -15,6 +16,6 @@ function usePlanets() {
   }, [getPlanets]);
 
   return planets;
-}
+};
 
 export default usePlanets;

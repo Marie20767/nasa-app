@@ -1,9 +1,9 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from 'react';
 
 import {
-  httpGetLaunches,
-  httpSubmitLaunch,
-  httpAbortLaunch,
+  getLaunchesRequest,
+  submitLaunchRequest,
+  abortLaunchRequest,
 } from './requests';
 
 function useLaunches(onSuccessSound, onAbortSound, onFailureSound) {
@@ -11,7 +11,8 @@ function useLaunches(onSuccessSound, onAbortSound, onFailureSound) {
   const [isPendingLaunch, setPendingLaunch] = useState(false);
 
   const getLaunches = useCallback(async () => {
-    const fetchedLaunches = await httpGetLaunches();
+    const fetchedLaunches = await getLaunchesRequest();
+
     saveLaunches(fetchedLaunches);
   }, []);
 
@@ -23,11 +24,11 @@ function useLaunches(onSuccessSound, onAbortSound, onFailureSound) {
     e.preventDefault();
     // setPendingLaunch(true);
     const data = new FormData(e.target);
-    const launchDate = new Date(data.get("launch-day"));
-    const mission = data.get("mission-name");
-    const rocket = data.get("rocket-name");
-    const target = data.get("planets-selector");
-    const response = await httpSubmitLaunch({
+    const launchDate = new Date(data.get('launch-day'));
+    const mission = data.get('mission-name');
+    const rocket = data.get('rocket-name');
+    const target = data.get('planets-selector');
+    const response = await submitLaunchRequest({
       launchDate,
       mission,
       rocket,
@@ -36,6 +37,7 @@ function useLaunches(onSuccessSound, onAbortSound, onFailureSound) {
 
     // TODO: Set success based on response.
     const success = false;
+
     if (success) {
       getLaunches();
       setTimeout(() => {
@@ -48,10 +50,11 @@ function useLaunches(onSuccessSound, onAbortSound, onFailureSound) {
   }, [getLaunches, onSuccessSound, onFailureSound]);
 
   const abortLaunch = useCallback(async (id) => {
-    const response = await httpAbortLaunch(id);
+    const response = await abortLaunchRequest(id);
 
     // TODO: Set success based on response.
     const success = false;
+
     if (success) {
       getLaunches();
       onAbortSound();
