@@ -1,8 +1,8 @@
 # Nasa Mission Control App
 
-Launch new missions to potentially habitable planets, view and abort your upcoming missions and check past missions via a series of dashboards. 
+IN PROGRESS. Launch new missions to potentially habitable planets, view and abort your upcoming missions and check past missions via a series of dashboards. 
 
-Front end tech stack: React, Arwes UI Framework, REST APIs
+Front end tech stack: React, Arwes UI Framework, REST APIs\
 Back end stack: NodeJS, Express, MongoDB, REST APIs
 
 # Getting Started with Create React App
