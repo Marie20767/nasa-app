@@ -1,21 +1,30 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import { getPlanetsRequest } from './requests';
+import { getRequest } from './requests';
 
 const usePlanets = () => {
-  const [planets, savePlanets] = useState([]);
+  const [planets, setPlanets] = useState([]);
+  const [planetsError, setPlanetsError] = useState('');
 
   const getPlanets = useCallback(async () => {
-    const fetchedPlanets = await getPlanetsRequest();
+    setPlanetsError('');
+    const fetchedPlanets = await getRequest('/planets', 'Failed to get Destination Exoplanets');
 
-    savePlanets(fetchedPlanets);
+    if (fetchedPlanets.error || !fetchedPlanets.length) {
+      setPlanetsError(fetchedPlanets.error);
+    } else {
+      setPlanets(fetchedPlanets);
+    }
   }, []);
 
   useEffect(() => {
     getPlanets();
   }, [getPlanets]);
 
-  return planets;
+  return {
+    planets,
+    planetsError,
+  };
 };
 
 export default usePlanets;
