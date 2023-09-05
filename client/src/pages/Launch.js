@@ -1,8 +1,10 @@
 import { useMemo } from 'react';
 import { Appear, Button, Loading, Paragraph } from 'arwes';
-import Clickable from '../components/Clickable';
 
-const Launch = ({ entered, planets, submitLaunch, isPendingLaunch }) => {
+import Clickable from '../components/Clickable';
+import Warning from '../components/Warning';
+
+const Launch = ({ entered, planets, submitLaunch, error, isPendingLaunch }) => {
   const selectorBody = useMemo(() => {
     return planets?.map((planet) => <option value={planet.kepler_name} key={planet.kepler_name}>{planet.kepler_name}</option>);
   }, [planets]);
@@ -14,6 +16,10 @@ const Launch = ({ entered, planets, submitLaunch, isPendingLaunch }) => {
       id="launch"
       animate
       show={entered}>
+      {error
+        ? <Warning errorMessage={error} />
+        : null
+      }
       <Paragraph>Schedule a mission launch for interstellar travel to one of the Kepler Exoplanets.</Paragraph>
       <Paragraph>Only confirmed planets matching the following criteria are available for the earliest scheduled missions:</Paragraph>
       <ul>

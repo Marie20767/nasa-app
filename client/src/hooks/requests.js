@@ -1,11 +1,20 @@
-const getPlanetsRequest = async () => {
-  // TODO: Once API is ready.
-  // Load planets and return as JSON.
-};
+import { API_DOMAIN } from '../constants';
 
-const getLaunchesRequest = async () => {
-  // TODO: Once API is ready.
-  // Load launches, sort by flight number, and return as JSON.
+const getRequest = async (endpoint, errorMessage) => {
+  try {
+    const response = await fetch(`${API_DOMAIN}${endpoint}`);
+    const result = await response.json();
+
+    if (!result.error) {
+      return result;
+    }
+
+    return { error: errorMessage };
+  } catch (e) {
+    console.log(e);
+
+    return { error: errorMessage };
+  }
 };
 
 const submitLaunchRequest = async (launch) => {
@@ -19,8 +28,7 @@ const abortLaunchRequest = async (id) => {
 };
 
 export {
-  getPlanetsRequest,
-  getLaunchesRequest,
+  getRequest,
   submitLaunchRequest,
   abortLaunchRequest,
 };

@@ -1,19 +1,25 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import {
-  getLaunchesRequest,
+  getRequest,
   submitLaunchRequest,
   abortLaunchRequest,
 } from './requests';
 
-function useLaunches(onSuccessSound, onAbortSound, onFailureSound) {
+const useLaunches = (onSuccessSound, onAbortSound, onFailureSound) => {
   const [launches, saveLaunches] = useState([]);
   const [isPendingLaunch, setPendingLaunch] = useState(false);
+  const [launchesError, setLaunchesError] = useState('');
 
   const getLaunches = useCallback(async () => {
-    const fetchedLaunches = await getLaunchesRequest();
+    setLaunchesError('');
+    const fetchedLaunches = await getRequest('/launches', 'Failed to get upcoming launches');
 
-    saveLaunches(fetchedLaunches);
+    if (fetchedLaunches.error || !fetchedLaunches.length) {
+      setLaunchesError(fetchedLaunches.error);
+    } else {
+      saveLaunches(fetchedLaunches);
+    }
   }, []);
 
   useEffect(() => {
@@ -65,10 +71,11 @@ function useLaunches(onSuccessSound, onAbortSound, onFailureSound) {
 
   return {
     launches,
+    launchesError,
     isPendingLaunch,
     submitLaunch,
     abortLaunch,
   };
-}
+};
 
 export default useLaunches;

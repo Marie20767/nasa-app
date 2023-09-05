@@ -3,11 +3,12 @@ import {
   withStyles,
   Appear,
   Paragraph,
-  Table,
   Words,
-  Button,
+  Link,
 } from 'arwes';
 
+import Warning from '../components/Warning';
+import CustomTable from '../components/CustomTable';
 import Clickable from '../components/Clickable';
 
 const styles = () => ({
@@ -17,7 +18,7 @@ const styles = () => ({
   },
 });
 
-const Upcoming = ({ entered, launches, classes, abortLaunch }) => {
+const Upcoming = ({ entered, launches, error, classes, abortLaunch }) => {
   const tableBody = useMemo(() => {
     return launches?.filter((launch) => launch.upcoming)
       .map((launch) => {
@@ -25,16 +26,16 @@ const Upcoming = ({ entered, launches, classes, abortLaunch }) => {
           <tr key={String(launch.flightNumber)}>
             <td>
               <Clickable style={{ color: 'red' }}>
-                <Button className={classes.link} onClick={() => abortLaunch(launch.flightNumber)}>
+                <Link className={classes.link} onClick={() => abortLaunch(launch.flightNumber)}>
                   ✖
-                </Button>
+                </Link>
               </Clickable>
             </td>
             <td>{launch.flightNumber}</td>
             <td>{new Date(launch.launchDate).toDateString()}</td>
             <td>{launch.mission}</td>
             <td>{launch.rocket}</td>
-            <td>{launch.target}</td>
+            <td>{launch.destination}</td>
           </tr>
         );
       });
@@ -42,24 +43,17 @@ const Upcoming = ({ entered, launches, classes, abortLaunch }) => {
 
   return (
     <Appear id="upcoming" animate show={entered}>
+      {error
+        ? <Warning errorMessage={error} />
+        : null
+      }
       <Paragraph>Upcoming missions including both SpaceX launches and newly scheduled rockets.</Paragraph>
       <Words animate>Warning! Clicking on the ✖ aborts the mission.</Words>
-      <Table animate show={entered}>
-        <table style={{ tableLayout: 'fixed' }}>
-          <thead>
-            <tr>
-              <th style={{ width: '3rem' }}>No.</th>
-              <th style={{ width: '10rem' }}>Date</th>
-              <th style={{ width: '11rem' }}>Mission</th>
-              <th style={{ width: '11rem' }}>Rocket</th>
-              <th>Destination</th>
-            </tr>
-          </thead>
-          <tbody>
-            {tableBody}
-          </tbody>
-        </table>
-      </Table>
+      <CustomTable
+        entered={entered}
+        lastColumnTitle="Destination">
+        {tableBody}
+      </CustomTable>
     </Appear>
   );
 };
