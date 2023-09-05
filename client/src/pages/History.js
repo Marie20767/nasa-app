@@ -1,7 +1,9 @@
-/* eslint-disable jsx-a11y/control-has-associated-label */
 import { useMemo } from 'react';
 import { Appear, Paragraph } from 'arwes';
+
 import CustomTable from '../components/CustomTable';
+
+import { HISTORY_TABLE_HEADERS } from '../constants';
 
 const History = ({ launches, entered }) => {
   const tableBody = useMemo(() => {
@@ -28,7 +30,9 @@ const History = ({ launches, entered }) => {
     <article id="history">
       <Appear animate show={entered}>
         <Paragraph>History of mission launches including SpaceX launches starting from the year 2006.</Paragraph>
-        <CustomTable launches={launches} lastColumnTitle="Customers">
+        <CustomTable
+          launches={launches}
+          tableHeaders={HISTORY_TABLE_HEADERS}>
           {tableBody}
         </CustomTable>
       </Appear>

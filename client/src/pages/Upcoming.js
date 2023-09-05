@@ -11,6 +11,8 @@ import Warning from '../components/Warning';
 import CustomTable from '../components/CustomTable';
 import Clickable from '../components/Clickable';
 
+import { UPCOMING_TABLE_HEADERS } from '../constants';
+
 const styles = () => ({
   link: {
     color: 'red',
@@ -42,18 +44,25 @@ const Upcoming = ({ entered, launches, error, classes, abortLaunch }) => {
   }, [launches, abortLaunch, classes.link]);
 
   return (
-    <Appear id="upcoming" animate show={entered}>
+    <Appear
+      id="upcoming"
+      animate
+      show={entered}>
+
       {error
         ? <Warning errorMessage={error} />
         : null
       }
+
       <Paragraph>Upcoming missions including both SpaceX launches and newly scheduled rockets.</Paragraph>
       <Words animate>Warning! Clicking on the ✖ aborts the mission.</Words>
+
       <CustomTable
         entered={entered}
-        lastColumnTitle="Destination">
+        tableHeaders={UPCOMING_TABLE_HEADERS}>
         {tableBody}
       </CustomTable>
+
     </Appear>
   );
 };
