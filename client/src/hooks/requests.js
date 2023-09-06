@@ -1,4 +1,4 @@
-import { API_DOMAIN } from '../constants';
+import { API_DOMAIN } from '../constants/constants';
 
 const getRequest = async (endpoint, errorMessage) => {
   try {
@@ -18,13 +18,52 @@ const getRequest = async (endpoint, errorMessage) => {
 };
 
 const submitLaunchRequest = async (launch) => {
-  // TODO: Once API is ready.
-  // Submit given launch data to launch system.
+  const newLaunch = {
+    ...launch,
+    launchDate: launch.launchDate.toISOString(),
+  };
+
+  try {
+    const response = await fetch(`${API_DOMAIN}/launches`, {
+      method: 'POST',
+      headers: { 'Content-type': 'application/json' },
+      body: JSON.stringify(newLaunch),
+    });
+
+    const result = await response.json();
+
+    if (result.error) {
+      console.log(result.error);
+
+      return { error: result.error };
+    }
+
+    return result;
+  } catch (e) {
+    console.log('>>> e: ', e);
+
+    return { error: 'Failed to launch mission' };
+  }
 };
 
-const abortLaunchRequest = async (id) => {
-  // TODO: Once API is ready.
-  // Delete launch with given ID.
+const abortLaunchRequest = async (launchId) => {
+  try {
+    const response = await fetch(`${API_DOMAIN}/launches/${launchId}`, { method: 'DELETE' });
+
+    const result = await response.json();
+
+    if (result.error) {
+      console.log(result.error);
+
+      return { error: result.error };
+    }
+
+    return result;
+  } catch (e) {
+    console.log('>>> e: ', e);
+
+    return { error: 'Failed to abort mission' };
+  }
 };
 
 export {

@@ -3,7 +3,7 @@ import { Appear, Paragraph } from 'arwes';
 
 import CustomTable from '../components/CustomTable';
 
-import { HISTORY_TABLE_HEADERS } from '../constants';
+import { HISTORY_TABLE_HEADERS } from '../constants/constants';
 
 const History = ({ launches, entered }) => {
   const tableBody = useMemo(() => {

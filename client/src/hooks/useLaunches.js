@@ -7,18 +7,24 @@ import {
 } from './requests';
 
 const useLaunches = (onSuccessSound, onAbortSound, onFailureSound) => {
-  const [launches, saveLaunches] = useState([]);
-  const [isPendingLaunch, setPendingLaunch] = useState(false);
-  const [launchesError, setLaunchesError] = useState('');
+  const [launches, setLaunches] = useState([]);
+  const [isPendingLaunch, setIsPendingLaunch] = useState(false);
+  const [getLaunchesError, setGetLaunchesError] = useState('');
+  const [submitLaunchError, setSubmitLaunchError] = useState('');
+  const [abortLaunchError, setAbortLaunchError] = useState('');
+  const [launchesSuccess, setLaunchesSuccess] = useState('');
+  const [missionInput, setMissionInput] = useState('');
+
+  // TODO: reset rocket input?
 
   const getLaunches = useCallback(async () => {
-    setLaunchesError('');
+    setGetLaunchesError('');
     const fetchedLaunches = await getRequest('/launches', 'Failed to get upcoming launches');
 
-    if (fetchedLaunches.error || !fetchedLaunches.length) {
-      setLaunchesError(fetchedLaunches.error);
+    if (fetchedLaunches.error || !Array.isArray(fetchedLaunches)) {
+      setGetLaunchesError(fetchedLaunches.error);
     } else {
-      saveLaunches(fetchedLaunches);
+      setLaunches(fetchedLaunches);
     }
   }, []);
 
@@ -28,53 +34,72 @@ const useLaunches = (onSuccessSound, onAbortSound, onFailureSound) => {
 
   const submitLaunch = useCallback(async (e) => {
     e.preventDefault();
-    // setPendingLaunch(true);
+    setSubmitLaunchError('');
+    setIsPendingLaunch(true);
+
     const data = new FormData(e.target);
     const launchDate = new Date(data.get('launch-day'));
     const mission = data.get('mission-name');
     const rocket = data.get('rocket-name');
-    const target = data.get('planets-selector');
-    const response = await submitLaunchRequest({
-      launchDate,
-      mission,
-      rocket,
-      target,
-    });
+    const destination = data.get('planets-selector');
 
-    // TODO: Set success based on response.
-    const success = false;
+    if (launchDate && mission && rocket && destination) {
+      const result = await submitLaunchRequest({
+        launchDate,
+        mission,
+        rocket,
+        destination,
+      });
 
-    if (success) {
-      getLaunches();
-      setTimeout(() => {
-        setPendingLaunch(false);
-        onSuccessSound();
-      }, 800);
+      if (result.error) {
+        setIsPendingLaunch(false);
+        onFailureSound();
+        setSubmitLaunchError(result.error);
+      } else {
+        getLaunches();
+
+        setTimeout(() => {
+          setIsPendingLaunch(false);
+          onSuccessSound();
+          setLaunchesSuccess('Successfully launched mission!');
+          setMissionInput('');
+        }, 800);
+
+        setTimeout(() => {
+          setLaunchesSuccess('');
+        }, 3000);
+      }
     } else {
+      setIsPendingLaunch(false);
       onFailureSound();
+      setSubmitLaunchError('Please fill in all fields to launch the mission');
     }
-  }, [getLaunches, onSuccessSound, onFailureSound]);
+  }, [onSuccessSound, onFailureSound]);
 
-  const abortLaunch = useCallback(async (id) => {
-    const response = await abortLaunchRequest(id);
+  const abortLaunch = useCallback(async (launchId) => {
+    setAbortLaunchError('');
+    const result = await abortLaunchRequest(launchId);
 
-    // TODO: Set success based on response.
-    const success = false;
-
-    if (success) {
+    if (result.error) {
+      onFailureSound();
+      setAbortLaunchError(result.error);
+    } else {
       getLaunches();
       onAbortSound();
-    } else {
-      onFailureSound();
     }
   }, [getLaunches, onAbortSound, onFailureSound]);
 
   return {
     launches,
-    launchesError,
+    getLaunchesError,
+    submitLaunchError,
+    abortLaunchError,
+    launchesSuccess,
     isPendingLaunch,
     submitLaunch,
     abortLaunch,
+    missionInput,
+    setMissionInput,
   };
 };
 

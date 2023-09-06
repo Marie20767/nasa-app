@@ -1,13 +1,15 @@
 import { withStyles } from 'arwes';
 
+import { colors } from '../constants/colors';
+
 const styles = () => ({
   warningContainer: {
-    border: '1px solid red',
+    border: `1px solid ${colors.red}`,
     padding: '0px 10px',
     marginBottom: '10px',
   },
   errorMessage: {
-    color: 'red',
+    color: colors.red,
     fontSize: '17px',
   },
 });

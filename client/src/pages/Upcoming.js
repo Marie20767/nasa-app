@@ -11,7 +11,7 @@ import Warning from '../components/Warning';
 import CustomTable from '../components/CustomTable';
 import Clickable from '../components/Clickable';
 
-import { UPCOMING_TABLE_HEADERS } from '../constants';
+import { UPCOMING_TABLE_HEADERS } from '../constants/constants';
 
 const styles = () => ({
   link: {

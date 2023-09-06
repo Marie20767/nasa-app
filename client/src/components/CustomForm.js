@@ -2,7 +2,14 @@ import { Button, Loading } from 'arwes';
 
 import Clickable from './Clickable';
 
-const CustomForm = ({ submitLaunch, selectorBody, entered, isPendingLaunch }) => {
+const CustomForm = ({
+  submitLaunch,
+  selectorBody,
+  entered,
+  isPendingLaunch,
+  missionInput,
+  setMissionInput,
+}) => {
   const today = new Date().toISOString().split('T')[0];
 
   return (
@@ -18,9 +25,18 @@ const CustomForm = ({ submitLaunch, selectorBody, entered, isPendingLaunch }) =>
         max="2040-12-31"
         defaultValue={today} />
       <label htmlFor="mission-name">Mission Name</label>
-      <input type="text" id="mission-name" name="mission-name" />
+      <input
+        type="text"
+        id="mission-name"
+        name="mission-name"
+        value={missionInput}
+        onChange={(e) => setMissionInput(e.target.value)} />
       <label htmlFor="rocket-name">Rocket Type</label>
-      <input type="text" id="rocket-name" name="rocket-name" defaultValue="Explorer IS1" />
+      <input
+        type="text"
+        id="rocket-name"
+        name="rocket-name"
+        defaultValue="Explorer IS1" />
       <label htmlFor="planets-selector">Destination Exoplanet</label>
       <select id="planets-selector" name="planets-selector">
         {selectorBody}

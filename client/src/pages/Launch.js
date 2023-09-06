@@ -3,8 +3,18 @@ import { Appear, Paragraph } from 'arwes';
 
 import Warning from '../components/Warning';
 import CustomForm from '../components/CustomForm';
+import Success from '../components/Success';
 
-const Launch = ({ entered, planets, submitLaunch, error, isPendingLaunch }) => {
+const Launch = ({
+  entered,
+  planets,
+  submitLaunch,
+  success,
+  error,
+  isPendingLaunch,
+  missionInput,
+  setMissionInput,
+}) => {
   const selectorBody = useMemo(() => {
     return planets?.map((planet) => {
       return (
@@ -27,6 +37,11 @@ const Launch = ({ entered, planets, submitLaunch, error, isPendingLaunch }) => {
         : null
       }
 
+      {success
+        ? <Success successMessage={success} />
+        : null
+      }
+
       <Paragraph>Schedule a mission launch for interstellar travel to one of the Kepler Exoplanets.</Paragraph>
       <Paragraph>Only confirmed planets matching the following criteria are available for the earliest scheduled missions:</Paragraph>
 
@@ -39,7 +54,9 @@ const Launch = ({ entered, planets, submitLaunch, error, isPendingLaunch }) => {
         submitLaunch={submitLaunch}
         selectorBody={selectorBody}
         entered={entered}
-        isPendingLaunch={isPendingLaunch} />
+        isPendingLaunch={isPendingLaunch}
+        missionInput={missionInput}
+        setMissionInput={setMissionInput} />
     </Appear>
   );
 };
