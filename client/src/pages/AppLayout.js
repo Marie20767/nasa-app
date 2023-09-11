@@ -52,12 +52,18 @@ const AppLayout = ({ sounds, classes }) => {
 
   const {
     launches,
+    getLaunchesError,
+    submitLaunchError,
+    abortLaunchError,
+    launchesSuccess,
     isPendingLaunch,
     submitLaunch,
     abortLaunch,
+    missionInput,
+    setMissionInput,
   } = useLaunches(onSuccessSound, onAbortSound, onFailureSound);
 
-  const planets = usePlanets();
+  const { planets, planetsError } = usePlanets();
 
   return (
     <div className={classes.content}>
@@ -74,21 +80,19 @@ const AppLayout = ({ sounds, classes }) => {
                 <Route exact path="/">
                   <Launch
                     entered={animation.entered}
+                    error={planetsError || submitLaunchError}
+                    success={launchesSuccess}
                     planets={planets}
                     submitLaunch={submitLaunch}
-                    isPendingLaunch={isPendingLaunch} />
-                </Route>
-                <Route exact path="/launch">
-                  <Launch
-                    entered={animation.entered}
-                    planets={planets}
-                    submitLaunch={submitLaunch}
-                    isPendingLaunch={isPendingLaunch} />
+                    isPendingLaunch={isPendingLaunch}
+                    missionInput={missionInput}
+                    setMissionInput={setMissionInput} />
                 </Route>
                 <Route exact path="/upcoming">
                   <Upcoming
                     entered={animation.entered}
                     launches={launches}
+                    error={getLaunchesError || abortLaunchError}
                     abortLaunch={abortLaunch} />
                 </Route>
                 <Route exact path="/history">

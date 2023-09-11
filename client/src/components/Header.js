@@ -92,7 +92,7 @@ const Header = (props) => {
               className={classes.button}
               animate
               layer="header">
-              <Link className={classes.link} to="/launch">
+              <Link className={classes.link} to="/">
                 <i className="material-icons">check_circle_outline</i>Launch
               </Link>
             </Highlight>

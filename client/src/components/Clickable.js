@@ -1,6 +1,7 @@
-import { withSounds } from "arwes";
+/* eslint-disable no-unused-expressions */
+import { withSounds } from 'arwes';
 
-const Clickable = props => {
+const Clickable = (props) => {
   const {
     children,
     sounds,
