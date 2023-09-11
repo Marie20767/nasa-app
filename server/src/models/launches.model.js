@@ -21,8 +21,12 @@ const addNewLaunch = (launch) => {
   return newLaunch;
 };
 
+const launchWithIdExists = (launchId) => {
+  return unsortedLaunches.some((launch) => launch.flightNumber === launchId);
+};
+
 const abortLaunch = (launchId) => {
-  if (!unsortedLaunches.some((launch) => launch.flightNumber === launchId)) {
+  if (!launchWithIdExists(launchId)) {
     return { error: "Launch id doesn't exist" };
   }
 
@@ -49,6 +53,7 @@ const getSortedLaunches = () => {
 
 module.exports = {
   addNewLaunch,
+  launchWithIdExists,
   abortLaunch,
   getSortedLaunches,
 };
