@@ -1,36 +1,43 @@
 const launches = require('./launches.mongo');
-
-let latestLaunchNumber = 100;
-
-let unsortedLaunches = [];
-
-const defaultLaunch = {
-  flightNumber: 100,
-  mission: 'Kepler Exploration X',
-  rocket: 'Explorer IS1',
-  launchDate: new Date('December 27, 2030'),
-  destination: 'Kepler-442 b',
-  customers: ['Marie\'s Team', 'NASA'],
-  upcoming: true,
-  success: true,
-};
+const planets = require('./planets.mongo');
+const { DEFAULT_FLIGHT_NUMBER } = require('../constants/launches');
 
 const saveLaunch = async (launch) => {
+  const planet = await planets.findOne({ kepler_name: launch.destination });
+
+  if (!planet) {
+    return ({ error: 'No matching planet found' });
+  }
   // If flightNumber already exists then we're updating the launch values otherwise we insert a new launch
-  await launches.updateOne({
+  const newLaunch = await launches.updateOne({
     flightNumber: launch.flightNumber,
   }, launch, {
     upsert: true,
   });
+
+  return newLaunch;
 };
 
-saveLaunch(defaultLaunch);
+const getLatestFlightNumber = async () => {
+  const latestLaunch = await launches
+    .findOne()
+    // sort in descending order
+    .sort(('-flightNumber'));
 
-const addNewLaunch = (launch) => {
+  if (!latestLaunch) {
+    return DEFAULT_FLIGHT_NUMBER;
+  }
+
+  return latestLaunch.flightNumber;
+};
+
+const addNewLaunch = async (launch) => {
   const { mission, rocket, launchDate, destination } = launch;
 
+  const newFlightNumber = await getLatestFlightNumber() + 1;
+
   const newLaunch = {
-    flightNumber: latestLaunchNumber++,
+    flightNumber: newFlightNumber,
     mission,
     rocket,
     launchDate,
@@ -40,35 +47,28 @@ const addNewLaunch = (launch) => {
     success: true,
   };
 
-  unsortedLaunches.push(newLaunch);
-
-  return newLaunch;
+  return await saveLaunch(newLaunch);
 };
 
-const launchWithIdExists = (launchId) => {
-  return unsortedLaunches.some((launch) => launch.flightNumber === launchId);
+const launchWithIdExists = async (launchId) => {
+  return await launches.findOne({ flightNumber: launchId });
 };
 
-const abortLaunch = (launchId) => {
-  if (!launchWithIdExists(launchId)) {
+const abortLaunch = async (launchId) => {
+  const launchExists = await launchWithIdExists(launchId);
+
+  if (!launchExists) {
     return { error: "Launch id doesn't exist" };
   }
 
-  const updatedLaunches = unsortedLaunches.map((launch) => {
-    if (launch.flightNumber === launchId) {
-      return {
-        ...launch,
-        upcoming: false,
-        success: false,
-      };
-    }
-
-    return launch;
+  const aborted = await launches.updateOne({
+    flightNumber: launchId,
+  }, {
+    upcoming: false,
+    success: false,
   });
 
-  unsortedLaunches = updatedLaunches;
-
-  return unsortedLaunches;
+  return aborted.modifiedCount === 1;
 };
 
 const getAllLaunches = async () => {

@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */
 import { Table } from 'arwes';
 
 const CustomTable = ({
@@ -10,8 +11,8 @@ const CustomTable = ({
       <table style={{ tableLayout: 'fixed' }}>
         <thead>
           <tr>
-            {tableHeaders.map((tableHeader) => {
-              return <th style={tableHeader.style}>{tableHeader.label}</th>;
+            {tableHeaders.map((tableHeader, index) => {
+              return <th key={`${tableHeader.style}-${index}`} style={tableHeader.style}>{tableHeader.label}</th>;
             })}
           </tr>
         </thead>

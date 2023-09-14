@@ -1,7 +1,7 @@
-const dbUsername = process.env.MONGODB_USER;
-const dbPassword = process.env.MONGODB_PASSWORD;
+const DB_USERNAME = process.env.MONGODB_USER;
+const DB_PASSWORD = process.env.MONGODB_PASSWORD;
 
 module.exports = {
-  dbUsername,
-  dbPassword,
+  DB_USERNAME,
+  DB_PASSWORD,
 };

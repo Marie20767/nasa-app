@@ -36,7 +36,7 @@ const savePlanet = async (planet) => {
       upsert: true,
     });
   } catch (err) {
-    console.error(`Could not save new planet ${err}`);
+    console.error(`Could not save new planet: ${err}`);
   }
 };
 
@@ -53,14 +53,14 @@ const loadPlanetsData = () => {
           savePlanet(data);
         }
       })
-      .on('error', (error) => {
-        console.log(error);
-        reject(error);
+      .on('error', (err) => {
+        console.error(err);
+        reject(err);
       })
       .on('end', async () => {
-        const habitablePlanetsCount = (await getAllPlanets()).length;
+        const habitablePlanetsCount = await getAllPlanets();
 
-        console.log(`${habitablePlanetsCount} habitable planets found!`);
+        console.log(`${habitablePlanetsCount.length} habitable planets found!`);
         resolve();
       });
   });

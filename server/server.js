@@ -2,11 +2,11 @@ const http = require('http');
 const mongoose = require('mongoose');
 const app = require('./src/app');
 const { loadPlanetsData } = require('./src/models/planets.model');
-const { dbUsername, dbPassword } = require('./src/constants/database');
+const { DB_USERNAME, DB_PASSWORD } = require('./src/constants/database');
 
 const PORT = process.env.PORT || 3001;
 
-const MONGO_URL = `mongodb+srv://${dbUsername}:${dbPassword}@cluster0.oxcxsoi.mongodb.net/?retryWrites=true&w=majority`;
+const MONGO_URL = `mongodb+srv://${DB_USERNAME}:${DB_PASSWORD}@cluster0.oxcxsoi.mongodb.net/?retryWrites=true&w=majority`;
 
 const server = http.createServer(app);
 
