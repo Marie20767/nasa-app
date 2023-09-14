@@ -24,7 +24,9 @@ const useLaunches = (onSuccessSound, onAbortSound, onFailureSound) => {
     if (fetchedLaunches.error || !Array.isArray(fetchedLaunches)) {
       setGetLaunchesError(fetchedLaunches.error);
     } else {
-      setLaunches(fetchedLaunches);
+      const sortedLaunches = fetchedLaunches.sort((a, b) => a.flightNumber - b.flightNumber);
+
+      setLaunches(sortedLaunches);
     }
   }, []);
 

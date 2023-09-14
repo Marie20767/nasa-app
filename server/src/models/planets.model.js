@@ -1,8 +1,7 @@
 const { parse } = require('csv-parse');
 const fs = require('fs');
 const path = require('path');
-
-const habitablePlanets = [];
+const planets = require('./planets.mongo');
 
 const isHabitablePlanet = (planet) => {
   // conditions:
@@ -16,6 +15,31 @@ const isHabitablePlanet = (planet) => {
   return isConfirmed && getsEnoughLight && hasRightSize;
 };
 
+const getAllPlanets = async () => {
+  // If you pass an empty object to find, Mongoose gives you all planets
+  // Second argument is the projection
+  // Exluding v and id
+  return await planets.find({}, {
+    _id: 0,
+    __v: 0,
+  });
+};
+
+const savePlanet = async (planet) => {
+  // Use upsert with Mongoose to make sure planets are only added when they don't exist yet
+  try {
+    await planets.updateOne({
+      kepler_name: planet.kepler_name,
+    }, {
+      kepler_name: planet.kepler_name,
+    }, {
+      upsert: true,
+    });
+  } catch (err) {
+    console.error(`Could not save new planet ${err}`);
+  }
+};
+
 const loadPlanetsData = () => {
   return new Promise((resolve, reject) => {
     fs.createReadStream(path.join(__dirname, '..', 'data', 'kepler_data.csv'))
@@ -24,17 +48,19 @@ const loadPlanetsData = () => {
         comment: '#',
         columns: true,
       }))
-      .on('data', (data) => {
+      .on('data', async (data) => {
         if (isHabitablePlanet(data)) {
-          habitablePlanets.push(data);
+          savePlanet(data);
         }
       })
       .on('error', (error) => {
         console.log(error);
         reject(error);
       })
-      .on('end', () => {
-        console.log(`${habitablePlanets.length} habitable planets found!`);
+      .on('end', async () => {
+        const habitablePlanetsCount = (await getAllPlanets()).length;
+
+        console.log(`${habitablePlanetsCount} habitable planets found!`);
         resolve();
       });
   });
@@ -42,5 +68,5 @@ const loadPlanetsData = () => {
 
 module.exports = {
   loadPlanetsData,
-  planets: habitablePlanets,
+  getAllPlanets,
 };

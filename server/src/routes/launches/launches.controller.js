@@ -1,8 +1,8 @@
 /* eslint-disable radix */
-const { getSortedLaunches, addNewLaunch, abortLaunch } = require('../../models/launches.model');
+const { getAllLaunches, addNewLaunch, abortLaunch } = require('../../models/launches.model');
 
-const getAllLaunchesRequest = (_, res) => {
-  res.status(200).json(getSortedLaunches());
+const getAllLaunchesRequest = async (_, res) => {
+  return res.status(200).json(await getAllLaunches());
 };
 
 const addLaunchRequest = (req, res) => {
