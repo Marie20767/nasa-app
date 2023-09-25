@@ -2,6 +2,8 @@ const request = require('supertest');
 const app = require('../../app');
 const { mongoConnect, mongoDisconnect } = require('../../services/mongo');
 
+const currentAPIVersion = 'v1';
+
 describe('Launches API', () => {
   beforeAll(async () => {
     await mongoConnect();
@@ -13,7 +15,7 @@ describe('Launches API', () => {
 
   describe('Test GET /launches', () => {
     test('Gets all launches successfully', async () => {
-      await request(app).get('/launches').expect(200);
+      await request(app).get(`/${currentAPIVersion}/launches`).expect(200);
     });
   });
 
@@ -31,7 +33,7 @@ describe('Launches API', () => {
 
     test('Adds a launch successfully', async () => {
       const response = await request(app)
-        .post('/launches')
+        .post(`/${currentAPIVersion}/launches`)
         .send(completeLaunchData)
         .expect(201);
 
@@ -44,7 +46,7 @@ describe('Launches API', () => {
 
     test('Catches missing required properties when adding a launch', async () => {
       const response = await request(app)
-        .post('/launches')
+        .post(`/${currentAPIVersion}/launches`)
         .send(launchDataWithoutDate)
         .expect(400);
 
@@ -58,7 +60,7 @@ describe('Launches API', () => {
       };
 
       const response = await request(app)
-        .post('/launches')
+        .post(`/${currentAPIVersion}/launches`)
         .send(launchDataWithInvalidDate)
         .expect(400);
 
