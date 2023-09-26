@@ -70,10 +70,11 @@ const populateLaunches = async () => {
     };
   });
 
-  // TODO: make it so it executes this fully before moving on?
-  spaceXLaunches.forEach(async (launch) => {
+  const promises = spaceXLaunches.map(async (launch) => {
     await saveLaunch(launch);
   });
+
+  await Promise.all(promises);
 };
 
 const loadSpaceXLaunchData = async () => {
