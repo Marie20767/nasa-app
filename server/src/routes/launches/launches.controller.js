@@ -1,8 +1,13 @@
 /* eslint-disable radix */
 const { getAllLaunches, addNewLaunch, abortLaunch } = require('../../models/launches.model');
+const { getPagination } = require('../../utils/query');
 
-const getAllLaunchesRequest = async (_, res) => {
-  return res.status(200).json(await getAllLaunches());
+const getAllLaunchesRequest = async (req, res) => {
+  const { skip, limit } = getPagination(req.query);
+
+  const launches = await getAllLaunches(skip, limit);
+
+  return res.status(200).json(launches);
 };
 
 const addLaunchRequest = async (req, res) => {

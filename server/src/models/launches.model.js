@@ -2,7 +2,7 @@
 const axios = require('axios');
 const launches = require('./launches.mongo');
 const planets = require('./planets.mongo');
-const { DEFAULT_FLIGHT_NUMBER, SPACE_X_URL } = require('../constants/launches');
+const { DEFAULT_FLIGHT_NUMBER, SPACEX_URL } = require('../constants/launches');
 
 const saveLaunch = async (launch) => {
   // If flightNumber already exists then we're updating the launch values otherwise we insert a new launch
@@ -20,7 +20,7 @@ const findLaunch = async (filter) => {
 };
 
 const populateLaunches = async () => {
-  const response = await axios.post(SPACE_X_URL, {
+  const response = await axios.post(SPACEX_URL, {
     query: {},
     options: {
       pagination: false,
@@ -47,20 +47,27 @@ const populateLaunches = async () => {
 
   const spaceXLaunchDocs = response.data.docs;
 
-  const spaceXLaunches = spaceXLaunchDocs.reduce((acc, currentLaunch) => {
-    return [
-      ...acc,
-      {
-        flightNumber: currentLaunch.flight_number,
-        mission: currentLaunch.name,
-        rocket: currentLaunch.rocket.name,
-        launchDate: currentLaunch.date_local,
-        upcoming: currentLaunch.upcoming,
-        success: currentLaunch.success,
-        customers: currentLaunch.payloads.flatMap((payload) => payload.customers),
-      },
-    ];
-  }, []);
+  const spaceXLaunches = spaceXLaunchDocs.map((launch) => {
+    const {
+      flight_number,
+      name,
+      rocket,
+      date_local,
+      upcoming,
+      success,
+      payloads,
+    } = launch;
+
+    return {
+      flightNumber: flight_number,
+      mission: name,
+      rocket: rocket.name,
+      launchDate: date_local,
+      upcoming,
+      success,
+      customers: payloads.flatMap((payload) => payload.customers),
+    };
+  });
 
   // TODO: make it so it executes this fully before moving on?
   spaceXLaunches.forEach(async (launch) => {
@@ -69,7 +76,7 @@ const populateLaunches = async () => {
 };
 
 const loadSpaceXLaunchData = async () => {
-  // Check if we already have the data to make sure we don't get it again for no reason
+  // Checking if we already have the data to make sure we don't get it again for no reason
   const firstLaunch = await findLaunch({
     flightNumber: 1,
     rocket: 'Falcon 1',
@@ -142,9 +149,12 @@ const abortLaunch = async (launchId) => {
   return aborted.modifiedCount === 1;
 };
 
-const getAllLaunches = async () => {
+const getAllLaunches = async (skipValue, limitValue) => {
   return await launches
-    .find({}, { _id: 0, __v: 0 });
+    .find({}, { _id: 0, __v: 0 })
+    .sort({ flightNumber: 1 })
+    .skip(skipValue)
+    .limit(limitValue);
 };
 
 module.exports = {
