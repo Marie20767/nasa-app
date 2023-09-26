@@ -1,13 +1,32 @@
 /* eslint-disable radix */
-const { getAllLaunches, addNewLaunch, abortLaunch } = require('../../models/launches.model');
-const { getPagination } = require('../../utils/query');
+const {
+  addNewLaunch,
+  abortLaunch,
+  getLaunches,
+} = require('../../models/launches.model');
+const { getPageOffset } = require('../../utils/query');
 
-const getAllLaunchesRequest = async (req, res) => {
-  const { skip, limit } = getPagination(req.query);
+const getRequestWithPagination = async (req, res, isUpcomingLaunch = false) => {
+  const { currentPageNumber } = req.params;
+  const skip = getPageOffset(currentPageNumber);
 
-  const launches = await getAllLaunches(skip, limit);
+  try {
+    const launches = await getLaunches(skip, currentPageNumber, isUpcomingLaunch);
 
-  return res.status(200).json(launches);
+    return res.status(200).json(launches);
+  } catch (err) {
+    return res.status(500).json({ error: err });
+  }
+};
+
+const getUpcomingLaunchesRequest = async (req, res) => {
+  const isUpcomingLaunch = true;
+
+  await getRequestWithPagination(req, res, isUpcomingLaunch);
+};
+
+const getHistoryLaunchesRequest = async (req, res) => {
+  await getRequestWithPagination(req, res);
 };
 
 const addLaunchRequest = async (req, res) => {
@@ -61,7 +80,8 @@ const abortLaunchRequest = async (req, res) => {
 };
 
 module.exports = {
-  getAllLaunchesRequest,
+  getUpcomingLaunchesRequest,
+  getHistoryLaunchesRequest,
   addLaunchRequest,
   abortLaunchRequest,
 };

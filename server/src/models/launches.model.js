@@ -1,8 +1,9 @@
+/* eslint-disable radix */
 /* eslint-disable consistent-return */
 const axios = require('axios');
 const launches = require('./launches.mongo');
 const planets = require('./planets.mongo');
-const { DEFAULT_FLIGHT_NUMBER, SPACEX_URL } = require('../constants/launches');
+const { DEFAULT_FLIGHT_NUMBER, SPACEX_URL, DEFAULT_PAGE_LIMIT } = require('../constants/launches');
 
 const saveLaunch = async (launch) => {
   // If flightNumber already exists then we're updating the launch values otherwise we insert a new launch
@@ -149,12 +150,28 @@ const abortLaunch = async (launchId) => {
   return aborted.modifiedCount === 1;
 };
 
-const getAllLaunches = async (skipValue, limitValue) => {
-  return await launches
-    .find({}, { _id: 0, __v: 0 })
+const getLaunches = async (skipValue, currentPage, isUpcomingLaunch) => {
+  // TODO: use caching here instead
+  const launchesTotalCount = await launches.countDocuments({ upcoming: !!isUpcomingLaunch });
+  const totalPages = Math.ceil(launchesTotalCount / DEFAULT_PAGE_LIMIT);
+
+  const launchResults = await launches
+    .find({ upcoming: !!isUpcomingLaunch }, { _id: 0, __v: 0 })
     .sort({ flightNumber: 1 })
     .skip(skipValue)
-    .limit(limitValue);
+    .limit(DEFAULT_PAGE_LIMIT);
+
+  if (parseInt(currentPage) === totalPages) {
+    return {
+      launches: launchResults,
+      isLastPage: true,
+    };
+  }
+
+  return {
+    launches: launchResults,
+    isLastPage: false,
+  };
 };
 
 module.exports = {
@@ -162,5 +179,5 @@ module.exports = {
   loadSpaceXLaunchData,
   launchWithIdExists,
   abortLaunch,
-  getAllLaunches,
+  getLaunches,
 };

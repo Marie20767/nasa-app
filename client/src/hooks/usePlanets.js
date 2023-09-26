@@ -8,7 +8,10 @@ const usePlanets = () => {
 
   const getPlanets = useCallback(async () => {
     setPlanetsError('');
-    const fetchedPlanets = await getRequest('/planets', 'Failed to get Destination Exoplanets');
+    const fetchedPlanets = await getRequest({
+      endpoint: '/planets',
+      errorMessage: 'Failed to get Destination Exoplanets',
+    });
 
     if (fetchedPlanets.error || !fetchedPlanets.length) {
       setPlanetsError(fetchedPlanets.error);

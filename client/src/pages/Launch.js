@@ -4,17 +4,24 @@ import { Appear, Paragraph } from 'arwes';
 import Warning from '../components/Warning';
 import CustomForm from '../components/CustomForm';
 import Success from '../components/Success';
+import useLaunches from '../hooks/useLaunches';
 
 const Launch = ({
   entered,
   planets,
-  submitLaunch,
-  success,
-  error,
-  isPendingLaunch,
-  missionInput,
-  setMissionInput,
+  planetsError,
+  onSuccessSound,
+  onFailureSound,
 }) => {
+  const {
+    launchSuccess,
+    isPendingLaunch,
+    submitLaunchError,
+    missionInput,
+    setMissionInput,
+    onHandleSubmitLaunch,
+  } = useLaunches(onSuccessSound, onFailureSound);
+
   const selectorBody = useMemo(() => {
     return planets?.map((planet) => {
       return (
@@ -32,13 +39,13 @@ const Launch = ({
       animate
       show={entered}>
 
-      {error
-        ? <Warning errorMessage={error} />
+      {planetsError || submitLaunchError
+        ? <Warning errorMessage={planetsError || submitLaunchError} />
         : null
       }
 
-      {success
-        ? <Success successMessage={success} />
+      {launchSuccess
+        ? <Success successMessage={launchSuccess} />
         : null
       }
 
@@ -51,7 +58,7 @@ const Launch = ({
       </ul>
 
       <CustomForm
-        submitLaunch={submitLaunch}
+        submitLaunch={onHandleSubmitLaunch}
         selectorBody={selectorBody}
         entered={entered}
         isPendingLaunch={isPendingLaunch}

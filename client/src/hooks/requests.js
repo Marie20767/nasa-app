@@ -1,6 +1,6 @@
 import { API_DOMAIN } from '../constants/constants';
 
-const getRequest = async (endpoint, errorMessage) => {
+const getRequest = async ({ endpoint, errorMessage }) => {
   try {
     const response = await fetch(`${API_DOMAIN}${endpoint}`);
     const result = await response.json();

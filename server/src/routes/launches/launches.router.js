@@ -1,9 +1,10 @@
 const express = require('express');
-const { getAllLaunchesRequest, addLaunchRequest, abortLaunchRequest } = require('./launches.controller');
+const { getUpcomingLaunchesRequest, addLaunchRequest, abortLaunchRequest, getHistoryLaunchesRequest } = require('./launches.controller');
 
 const launchesRouter = express.Router();
 
-launchesRouter.get('/', getAllLaunchesRequest);
+launchesRouter.get('/upcoming/:currentPageNumber', getUpcomingLaunchesRequest);
+launchesRouter.get('/history/:currentPageNumber', getHistoryLaunchesRequest);
 launchesRouter.post('/', addLaunchRequest);
 launchesRouter.delete('/:launchId', abortLaunchRequest);
 

@@ -1,40 +1,14 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 
-import {
-  getRequest,
-  submitLaunchRequest,
-  abortLaunchRequest,
-} from './requests';
+import { submitLaunchRequest } from './requests';
 
-const useLaunches = (onSuccessSound, onAbortSound, onFailureSound) => {
-  const [launches, setLaunches] = useState([]);
+const useLaunches = (onSuccessSound, onFailureSound) => {
   const [isPendingLaunch, setIsPendingLaunch] = useState(false);
-  const [getLaunchesError, setGetLaunchesError] = useState('');
   const [submitLaunchError, setSubmitLaunchError] = useState('');
-  const [abortLaunchError, setAbortLaunchError] = useState('');
-  const [launchesSuccess, setLaunchesSuccess] = useState('');
+  const [launchSuccess, setLaunchSuccess] = useState('');
   const [missionInput, setMissionInput] = useState('');
 
-  // TODO: reset rocket input?
-
-  const getLaunches = useCallback(async () => {
-    setGetLaunchesError('');
-    const fetchedLaunches = await getRequest('/launches', 'Failed to get upcoming launches');
-
-    if (fetchedLaunches.error || !Array.isArray(fetchedLaunches)) {
-      setGetLaunchesError(fetchedLaunches.error);
-    } else {
-      const sortedLaunches = fetchedLaunches.sort((a, b) => a.flightNumber - b.flightNumber);
-
-      setLaunches(sortedLaunches);
-    }
-  }, []);
-
-  useEffect(() => {
-    getLaunches();
-  }, [getLaunches]);
-
-  const submitLaunch = useCallback(async (e) => {
+  const onHandleSubmitLaunch = useCallback(async (e) => {
     e.preventDefault();
     setSubmitLaunchError('');
     setIsPendingLaunch(true);
@@ -58,17 +32,15 @@ const useLaunches = (onSuccessSound, onAbortSound, onFailureSound) => {
         onFailureSound();
         setSubmitLaunchError(result.error);
       } else {
-        getLaunches();
-
         setTimeout(() => {
           setIsPendingLaunch(false);
           onSuccessSound();
-          setLaunchesSuccess('Successfully launched mission!');
+          setLaunchSuccess('Successfully launched mission!');
           setMissionInput('');
         }, 800);
 
         setTimeout(() => {
-          setLaunchesSuccess('');
+          setLaunchSuccess('');
         }, 3000);
       }
     } else {
@@ -78,30 +50,13 @@ const useLaunches = (onSuccessSound, onAbortSound, onFailureSound) => {
     }
   }, [onSuccessSound, onFailureSound]);
 
-  const abortLaunch = useCallback(async (launchId) => {
-    setAbortLaunchError('');
-    const result = await abortLaunchRequest(launchId);
-
-    if (result.error) {
-      onFailureSound();
-      setAbortLaunchError(result.error);
-    } else {
-      getLaunches();
-      onAbortSound();
-    }
-  }, [getLaunches, onAbortSound, onFailureSound]);
-
   return {
-    launches,
-    getLaunchesError,
     submitLaunchError,
-    abortLaunchError,
-    launchesSuccess,
+    launchSuccess,
     isPendingLaunch,
-    submitLaunch,
-    abortLaunch,
     missionInput,
     setMissionInput,
+    onHandleSubmitLaunch,
   };
 };
 

@@ -11,9 +11,6 @@ import {
   withStyles,
 } from 'arwes';
 
-import usePlanets from '../hooks/usePlanets';
-import useLaunches from '../hooks/useLaunches';
-
 import Centered from '../components/Centered';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -21,6 +18,8 @@ import Footer from '../components/Footer';
 import Launch from './Launch';
 import History from './History';
 import Upcoming from './Upcoming';
+
+import usePlanets from '../hooks/usePlanets';
 
 const styles = () => ({
   content: {
@@ -50,19 +49,6 @@ const AppLayout = ({ sounds, classes }) => {
   const onAbortSound = () => sounds.abort && sounds.abort.play();
   const onFailureSound = () => sounds.warning && sounds.warning.play();
 
-  const {
-    launches,
-    getLaunchesError,
-    submitLaunchError,
-    abortLaunchError,
-    launchesSuccess,
-    isPendingLaunch,
-    submitLaunch,
-    abortLaunch,
-    missionInput,
-    setMissionInput,
-  } = useLaunches(onSuccessSound, onAbortSound, onFailureSound);
-
   const { planets, planetsError } = usePlanets();
 
   return (
@@ -80,23 +66,19 @@ const AppLayout = ({ sounds, classes }) => {
                 <Route exact path="/">
                   <Launch
                     entered={animation.entered}
-                    error={planetsError || submitLaunchError}
-                    success={launchesSuccess}
+                    planetsError={planetsError}
                     planets={planets}
-                    submitLaunch={submitLaunch}
-                    isPendingLaunch={isPendingLaunch}
-                    missionInput={missionInput}
-                    setMissionInput={setMissionInput} />
+                    onSuccessSound={onSuccessSound}
+                    onFailureSound={onFailureSound} />
                 </Route>
                 <Route exact path="/upcoming">
                   <Upcoming
                     entered={animation.entered}
-                    launches={launches}
-                    error={getLaunchesError || abortLaunchError}
-                    abortLaunch={abortLaunch} />
+                    onAbortSound={onAbortSound}
+                    onFailureSound={onFailureSound} />
                 </Route>
                 <Route exact path="/history">
-                  <History entered={animation.entered} launches={launches} />
+                  <History entered={animation.entered} classes={classes} />
                 </Route>
               </Switch>
             </div>

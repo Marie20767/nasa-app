@@ -7,11 +7,13 @@ import {
   Link,
 } from 'arwes';
 
+import { UPCOMING_TABLE_HEADERS } from '../constants/constants';
+import useUpcomingLaunches from '../hooks/useUpcomingLaunches';
+
 import Warning from '../components/Warning';
 import CustomTable from '../components/CustomTable';
 import Clickable from '../components/Clickable';
-
-import { UPCOMING_TABLE_HEADERS } from '../constants/constants';
+import MoreResultsButton from '../components/MoreResultsButton';
 
 const styles = () => ({
   link: {
@@ -20,28 +22,36 @@ const styles = () => ({
   },
 });
 
-const Upcoming = ({ entered, launches, error, classes, abortLaunch }) => {
+const Upcoming = ({ entered, classes, onAbortSound, onFailureSound }) => {
+  const {
+    launches,
+    isLastPage,
+    abortLaunchError,
+    launchesError,
+    onHandleAbortLaunch,
+    onHandleMoreLaunchResults,
+  } = useUpcomingLaunches(onAbortSound, onFailureSound);
+
   const tableBody = useMemo(() => {
-    return launches?.filter((launch) => launch.upcoming)
-      .map((launch) => {
-        return (
-          <tr key={String(launch.flightNumber)}>
-            <td>
-              <Clickable style={{ color: 'red' }}>
-                <Link className={classes.link} onClick={() => abortLaunch(launch.flightNumber)}>
-                  ✖
-                </Link>
-              </Clickable>
-            </td>
-            <td>{launch.flightNumber}</td>
-            <td>{new Date(launch.launchDate).toDateString()}</td>
-            <td>{launch.mission}</td>
-            <td>{launch.rocket}</td>
-            <td>{launch.destination}</td>
-          </tr>
-        );
-      });
-  }, [launches, abortLaunch, classes.link]);
+    return launches.map((launch) => {
+      return (
+        <tr key={String(launch.flightNumber)}>
+          <td>
+            <Clickable style={{ color: 'red' }}>
+              <Link className={classes.link} onClick={() => onHandleAbortLaunch(launch.flightNumber)}>
+                ✖
+              </Link>
+            </Clickable>
+          </td>
+          <td>{launch.flightNumber}</td>
+          <td>{new Date(launch.launchDate).toDateString()}</td>
+          <td>{launch.mission}</td>
+          <td>{launch.rocket}</td>
+          <td>{launch.destination}</td>
+        </tr>
+      );
+    });
+  }, [launches, onHandleAbortLaunch, classes.link]);
 
   return (
     <Appear
@@ -49,8 +59,8 @@ const Upcoming = ({ entered, launches, error, classes, abortLaunch }) => {
       animate
       show={entered}>
 
-      {error
-        ? <Warning errorMessage={error} />
+      {abortLaunchError || launchesError
+        ? <Warning errorMessage={abortLaunchError || abortLaunchError} />
         : null
       }
 
@@ -62,6 +72,11 @@ const Upcoming = ({ entered, launches, error, classes, abortLaunch }) => {
         tableHeaders={UPCOMING_TABLE_HEADERS}>
         {tableBody}
       </CustomTable>
+
+      {!isLastPage
+        ? <MoreResultsButton classes={classes} onHandleMoreLaunchResults={onHandleMoreLaunchResults} />
+        : null
+        }
 
     </Appear>
   );
