@@ -14,8 +14,8 @@ describe('Launches API', () => {
   });
 
   describe('Test GET /launches', () => {
-    test('Gets all launches successfully', async () => {
-      await request(app).get(`/${currentAPIVersion}/launches`).expect(200);
+    test('Gets upcoming launches successfully', async () => {
+      await request(app).get(`/${currentAPIVersion}/launches/upcoming/1`).expect(200);
     });
   });
 
