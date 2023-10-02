@@ -11,7 +11,7 @@ jobs:
       MONGO_URL: mongodb://localhost/nasa
     strategy:
       matrix:
-        mongodb-version: ['6.1.0']
+        mongodb-version: ['6.0']
     runs-on: ubuntu-latest
     steps: 
       - uses: actions/checkout@v3
