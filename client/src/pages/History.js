@@ -3,13 +3,16 @@ import { Appear, Paragraph } from 'arwes';
 
 import { HISTORY_TABLE_HEADERS } from '../constants/constants';
 
+import useHistoryLaunches from '../hooks/useHistoryLaunches';
+
 import CustomTable from '../components/CustomTable';
 import MoreResultsButton from '../components/MoreResultsButton';
-import useHistoryLaunches from '../hooks/useHistoryLaunches';
+import Warning from '../components/Warning';
 
 const History = ({ entered, classes }) => {
   const {
     launches,
+    launchesError,
     isLastPage,
     onHandleMoreLaunchResults,
   } = useHistoryLaunches();
@@ -36,6 +39,11 @@ const History = ({ entered, classes }) => {
   return (
     <article id="history">
       <Appear animate show={entered}>
+
+        {launchesError
+          ? <Warning errorMessage={launchesError} />
+          : null
+      }
 
         <Paragraph>History of mission launches including SpaceX launches starting from the year 2006.</Paragraph>
         <CustomTable
