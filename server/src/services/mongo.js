@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const { DB_USERNAME, DB_PASSWORD } = require('../constants/database');
 
+require('dotenv').config();
+
 const MONGO_URL = `mongodb+srv://${DB_USERNAME}:${DB_PASSWORD}@cluster0.oxcxsoi.mongodb.net/?retryWrites=true&w=majority`;
 
 mongoose.connection.once('open', () => {
