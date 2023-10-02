@@ -15,7 +15,7 @@ const useHistoryLaunches = () => {
 
     const fetchedLaunches = await getRequest({
       endpoint: `/launches/history/${pageNumber}`,
-      errorMessage: 'Failed to get upcoming launches',
+      errorMessage: 'Failed to get past launches',
     });
 
     if (fetchedLaunches.error || !Array.isArray(fetchedLaunches.launches)) {

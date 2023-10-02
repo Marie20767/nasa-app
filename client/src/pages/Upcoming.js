@@ -60,7 +60,7 @@ const Upcoming = ({ entered, classes, onAbortSound, onFailureSound }) => {
       show={entered}>
 
       {abortLaunchError || launchesError
-        ? <Warning errorMessage={abortLaunchError || abortLaunchError} />
+        ? <Warning errorMessage={abortLaunchError || launchesError} />
         : null
       }
 
