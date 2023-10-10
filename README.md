@@ -2,8 +2,13 @@
 
 IN PROGRESS. Launch new missions to potentially habitable planets, view and abort your upcoming missions and check past missions via a series of dashboards. 
 
+<<<<<<< Updated upstream
 Front end tech stack: React, Arwes UI Framework, REST APIs\
 Back end stack: NodeJS, Express, MongoDB, Mongoose, REST APIs, Jest, Supertest
+=======
+Front end stack: React, Arwes UI Framework, REST APIs\
+Back end stack: NodeJS, Express, MongoDB, Mongoose, REST APIs, Jest, Supertest, Docker, AWS
+>>>>>>> Stashed changes
 
 # Getting Started with Create React App
 
