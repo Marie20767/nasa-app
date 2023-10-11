@@ -1,6 +1,10 @@
 /* eslint-disable radix */
 /* eslint-disable consistent-return */
+
+// External imports
 const axios = require('axios');
+// Internal imports
+const cache = require('../services/node-cache');
 const launches = require('./launches.mongo');
 const planets = require('./planets.mongo');
 const { DEFAULT_FLIGHT_NUMBER, SPACEX_URL, DEFAULT_PAGE_LIMIT } = require('../constants/launches');
@@ -151,10 +155,16 @@ const abortLaunch = async (launchId) => {
   return aborted.modifiedCount === 1;
 };
 
-const getLaunches = async (skipValue, currentPage, isUpcomingLaunch) => {
-  // TODO: use caching here instead
-  const launchesTotalCount = await launches.countDocuments({ upcoming: !!isUpcomingLaunch });
-  const totalPages = Math.ceil(launchesTotalCount / DEFAULT_PAGE_LIMIT);
+const getLaunches = async (skipValue, currentPageNum, isUpcomingLaunch) => {
+  let totalPagesNum = cache.get('totalPages');
+
+  if (!totalPagesNum) {
+    const launchesTotalCount = await launches.countDocuments({ upcoming: !!isUpcomingLaunch });
+
+    totalPagesNum = Math.ceil(launchesTotalCount / DEFAULT_PAGE_LIMIT);
+
+    cache.set('totalPages', totalPagesNum);
+  }
 
   const launchResults = await launches
     .find({ upcoming: !!isUpcomingLaunch }, { _id: 0, __v: 0 })
@@ -162,7 +172,7 @@ const getLaunches = async (skipValue, currentPage, isUpcomingLaunch) => {
     .skip(skipValue)
     .limit(DEFAULT_PAGE_LIMIT);
 
-  if (parseInt(currentPage) === totalPages) {
+  if (parseInt(currentPageNum) === totalPagesNum) {
     return {
       launches: launchResults,
       isLastPage: true,

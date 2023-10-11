@@ -52,7 +52,7 @@ const History = ({ entered, classes }) => {
           {tableBody}
         </CustomTable>
 
-        {!isLastPage
+        {!isLastPage && launches.length
           ? <MoreResultsButton classes={classes} onHandleMoreLaunchResults={onHandleMoreLaunchResults} />
           : null
         }
