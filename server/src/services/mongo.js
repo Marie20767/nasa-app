@@ -13,8 +13,6 @@ mongoose.connection.on('error', (err) => {
 });
 
 const mongoConnect = async () => {
-  console.log('>>> process.env: ', process.env.MONGO_URL);
-
   await mongoose.connect(MONGO_URL);
 };
 

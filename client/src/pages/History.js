@@ -38,7 +38,7 @@ const History = ({ entered, classes }) => {
 
   return (
     <article id="history">
-      <Appear animate show={entered}>
+      <Appear animate show={entered} style={{ display: 'flex', flexDirection: 'column' }}>
 
         {launchesError
           ? <Warning errorMessage={launchesError} />
@@ -52,7 +52,7 @@ const History = ({ entered, classes }) => {
           {tableBody}
         </CustomTable>
 
-        {!isLastPage
+        {!isLastPage && launches.length
           ? <MoreResultsButton classes={classes} onHandleMoreLaunchResults={onHandleMoreLaunchResults} />
           : null
         }

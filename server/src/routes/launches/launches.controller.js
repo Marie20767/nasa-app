@@ -8,6 +8,7 @@ const { getPageOffset } = require('../../utils/query');
 
 const getRequestWithPagination = async (req, res, isUpcomingLaunch = false) => {
   const { currentPageNumber } = req.params;
+
   const skip = getPageOffset(currentPageNumber);
 
   try {
@@ -15,6 +16,8 @@ const getRequestWithPagination = async (req, res, isUpcomingLaunch = false) => {
 
     return res.status(200).json(launches);
   } catch (err) {
+    console.error('Error getting launches', err);
+
     return res.status(500).json({ error: err });
   }
 };
@@ -51,7 +54,7 @@ const addLaunchRequest = async (req, res) => {
 
     return res.status(201).json(launch);
   } catch (err) {
-    console.error(err);
+    console.error('Error adding launch', err);
 
     return res.status(500).json('Could not save new launch');
   }
@@ -73,7 +76,7 @@ const abortLaunchRequest = async (req, res) => {
 
     return res.status(200).json(`Launch with id ${launchIdToAbort} aborted`);
   } catch (err) {
-    console.error(err);
+    console.error('Error aborting launch', err);
 
     return res.status(500).json({ error: `Could not abort launch No.${launchIdToAbort}` });
   }
