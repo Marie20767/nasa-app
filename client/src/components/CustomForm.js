@@ -1,5 +1,7 @@
 import { Button, Loading } from 'arwes';
 
+import '../styles/Button.css';
+
 import Clickable from './Clickable';
 
 const CustomForm = ({
@@ -47,7 +49,8 @@ const CustomForm = ({
           show={entered}
           type="submit"
           layer="success"
-          disabled={isPendingLaunch}>
+          disabled={isPendingLaunch}
+          className="custom-form-button">
           Launch Mission ✔
         </Button>
       </Clickable>

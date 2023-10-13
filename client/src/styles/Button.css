@@ -1,0 +1,7 @@
+
+.custom-form-button button {
+  @media (max-width: 800px) {
+    padding: 10px;
+    font-size: 13px;
+  }
+}

@@ -2,7 +2,6 @@ import { Button, withStyles } from 'arwes';
 
 const styles = {
   buttonContainer: {
-    width: '100%',
     display: 'flex',
     justifyContent: 'center',
   },
@@ -11,7 +10,7 @@ const styles = {
 const MoreResultsButton = ({ classes, onHandleMoreLaunchResults }) => {
   return (
     <div className={classes.buttonContainer}>
-      <Button onClick={onHandleMoreLaunchResults} className={classes.button}>
+      <Button onClick={onHandleMoreLaunchResults}>
         More results
       </Button>
     </div>

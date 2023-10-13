@@ -1,4 +1,3 @@
-// TODO: fix mobile styling for upcoming and history
 import {
   BrowserRouter as Router,
 } from 'react-router-dom';

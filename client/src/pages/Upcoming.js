@@ -16,6 +16,9 @@ import Clickable from '../components/Clickable';
 import MoreResultsButton from '../components/MoreResultsButton';
 
 const styles = () => ({
+  container: {
+    display: 'block',
+  },
   link: {
     color: 'red',
     textDecoration: 'none',
@@ -57,7 +60,8 @@ const Upcoming = ({ entered, classes, onAbortSound, onFailureSound }) => {
     <Appear
       id="upcoming"
       animate
-      show={entered}>
+      show={entered}
+      className={classes.container}>
 
       {abortLaunchError || launchesError
         ? <Warning errorMessage={abortLaunchError || launchesError} />

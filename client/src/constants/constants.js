@@ -4,9 +4,9 @@ export const HISTORY_TABLE_HEADERS = [
   { style: { width: '2rem' }, label: '' },
   { style: { width: '3rem' }, label: 'No.' },
   { style: { width: '9rem' }, label: 'Date' },
-  { style: {}, label: 'Mission' },
+  { style: { width: '8rem' }, label: 'Mission' },
   { style: { width: '7rem' }, label: 'Rocket' },
-  { style: {}, label: 'Customers' },
+  { style: { width: '7rem' }, label: 'Customers' },
 ];
 
 export const UPCOMING_TABLE_HEADERS = [
@@ -15,5 +15,5 @@ export const UPCOMING_TABLE_HEADERS = [
   { style: { width: '10rem' }, label: 'Date' },
   { style: { width: '11rem' }, label: 'Mission' },
   { style: { width: '11rem' }, label: 'Rocket' },
-  { style: {}, label: 'Destination' },
+  { style: { width: '7rem' }, label: 'Destination' },
 ];
